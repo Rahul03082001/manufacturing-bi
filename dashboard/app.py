@@ -90,13 +90,17 @@ def display(conn):
     st.caption(f'Approved run {run_id} · Published {status["published_at"]} (UTC)')
 
 
-reporting_engine = engine()
+reporting_engine = None
 try:
+    reporting_engine = engine()
     with reporting_engine.connect().execution_options(isolation_level='REPEATABLE READ') as connection:
         with connection.begin():
             connection.execute(text('SET TRANSACTION READ ONLY'))
             display(connection)
+except KeyError:
+    st.info('The dashboard is waiting for its reporting database settings. The app owner needs to finish the connection setup.')
 except Exception:
     st.error('Reporting data is unavailable. Check database health and the reporting account configuration, then refresh.')
 finally:
-    reporting_engine.dispose()
+    if reporting_engine is not None:
+        reporting_engine.dispose()

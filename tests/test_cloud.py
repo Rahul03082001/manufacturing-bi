@@ -21,6 +21,14 @@ def test_remote_connection_options(monkeypatch):
         db.dispose()
 
 
+def test_missing_hosted_settings_show_setup_message(monkeypatch):
+    monkeypatch.delenv('DB_USER', raising=False)
+    monkeypatch.delenv('DB_PASSWORD', raising=False)
+    app = AppTest.from_file('streamlit_app.py').run(timeout=20)
+    assert not app.exception and not app.error
+    assert 'waiting for its reporting database settings' in app.info[0].value
+
+
 def test_cloud_entrypoint_rerenders(monkeypatch, process, tiny):
     process(tiny)
     monkeypatch.setenv('DB_USER', 'reporter')

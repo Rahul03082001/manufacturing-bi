@@ -79,3 +79,7 @@ After deploy, verify the real URL opens, the closing value agrees with the hoste
 - Streamlit deployment configured for `streamlit_app.py`, branch `main`, Python **3.12**; app publication awaits secret setup and final live verification.
 
 For future database smoke checks, keep `.env.cloud.reporter` locally with the same root settings as the TOML example, in dotenv `KEY=value` format, and run `docker compose -f compose.cloud.yaml run --rm verify`. This service receives only the reporter credential. The cloud operator env files use Compose parsing; do not pass quoted dotenv values directly to `docker run --env-file`, whose parsing differs.
+
+The Streamlit service was created at https://rahul-manufacturing-bi.streamlit.app/ using Python 3.12. Its first startup confirmed the reporter secret settings had not yet been entered (`DB_USER` missing), so the URL is not yet a verified working dashboard. The owner was directed to App settings → Secrets and the ignored local `.streamlit/secrets.toml` file. No credentials are published in the repository.
+
+The startup now handles missing database settings with a readable setup message. Streamlit's hosting log replaced pyarrow 26 with 24; the repository now pins **pyarrow 24.0.0** explicitly to match that hosted selection. A rebuilt local image passed **51 tests** after these changes. Final dashboard verification remains pending until its reporter secrets are saved.
