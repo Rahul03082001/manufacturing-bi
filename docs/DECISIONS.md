@@ -194,3 +194,14 @@ This starter file describes proposed defaults for a small portfolio project. No 
 See [VERIFICATION.md](VERIFICATION.md) for actual commands and outputs, and [BACKLOG.md](BACKLOG.md) for explicitly deferred work. Original context, alternatives, and trade-offs above are preserved. `Pending` commit fields do not imply missing implementation; actual local history is recorded after each commit is created. No real Jira keys or external review are claimed.
 
 The dashboard service also overrides the shared development mounts: only its application/source folders are mounted read-only; delivered inputs and evidence folders are not mounted into the reporting container. This complements database role restrictions without claiming process isolation against a host administrator.
+
+## ADR-013: Public portfolio repository and free hosted deployment
+
+- Date: 2026-11-02
+- Status: Accepted; implementation: Implemented, not verified (remote deployment)
+- Context: The owner explicitly requested GitHub publication and a live project, then selected a public repository and free hosting only. This supersedes the earlier local-only scope boundary for this requested deployment.
+- Options: Keep local-only; paid hosting; free Streamlit UI plus managed PostgreSQL.
+- Decision: Publish under Rahul03082001/manufacturing-bi and prepare Streamlit Community Cloud + Neon free hosting. Preserve PostgreSQL calculations, restricted reporter identity, and separate owner/pipeline operations. No paid plans.
+- Trade-off: Account sign-in and provider consent may require the owner; free services may sleep and impose resource limits. This is a live portfolio demo, not production availability.
+- Verification: 50 local tests passed after adding cloud entry-point rerender and explicit remote TLS configuration checks. Secret files are excluded from Git and Docker. Actual remote outcomes are recorded separately in DEPLOYMENT.md.
+- Commit / actual Jira key: Pending / None.

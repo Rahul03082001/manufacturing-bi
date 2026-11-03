@@ -18,3 +18,5 @@ These are local references, not Jira issues. No Jira tickets, remote repositorie
 | LOCAL-012 | Multi-plant/currency, variable costs, WIP, COGS, full ledger | Deferred | Fixed inventory-account model only |
 | LOCAL-013 | Automated column lineage, Power BI/Tableau, cloud hosting | Deferred | Manual lineage + local Streamlit |
 | LOCAL-014 | Dependency refresh and base-image digest pinning | Deferred | Tested lock captured; image tags remain mutable; upstream chart deprecation warning recorded |
+
+Follow-up: LOCAL-015 — public GitHub publication and free hosted app, requested by the owner. Cloud entry point, TLS settings, ignored secrets and operator commands implemented; 50 local tests pass. Actual GitHub/hosting completion is tracked in DEPLOYMENT.md.

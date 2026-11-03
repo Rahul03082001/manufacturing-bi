@@ -42,3 +42,7 @@ Implementation commit: `d4ad0c1ccea81d0ea56a31c3e0227aaf03f4e18c` — pipeline, 
 CI workflow was added only after real local checks passed. Hosted GitHub Actions and x86 execution have not been verified. No remote, push, Jira issue, cloud deployment, external review, SOX certification or production readiness is claimed. Administrator override, synthetic common-source limitations and deferred work are documented in README and BACKLOG.
 
 Final deployment check: `docker compose up -d --wait dashboard` passed after limiting dashboard mounts. A container-side AppTest asserted reporter identity, no pipeline/owner password environment variables, no `/app/data` or `/app/evidence` directories, no rendering errors and the $1,168,661.00 published card. The disposable test service was stopped after verification; the demo database and dashboard remain running.
+
+## Hosting preparation follow-up
+
+At the owner's request, added a root cloud entry point, configurable PostgreSQL port/TLS/timeouts, secret exclusions and separate cloud operator Compose commands. Executed `docker compose build pipeline && docker compose --profile test run --rm tests`: **50 passed, 1 upstream deprecation warning**, exit 0. The hosted database and public URL still require separate verification; these local checks do not prove remote deployment.

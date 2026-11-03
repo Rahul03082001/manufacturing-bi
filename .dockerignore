@@ -1,5 +1,7 @@
 .git
 .env
+.env.*
+.streamlit/secrets.toml
 data
 evidence
 __pycache__

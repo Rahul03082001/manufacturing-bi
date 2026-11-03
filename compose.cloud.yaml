@@ -1,0 +1,21 @@
+# Operator-only commands for a separate managed PostgreSQL database.
+# The hosted dashboard gets reporter secrets separately, never these owner files.
+name: manufacturing-bi-cloud-operator
+services:
+  setup:
+    image: postgres:16-bookworm
+    env_file: .env.cloud.owner
+    volumes:
+      - ./sql:/sql:ro
+    entrypoint: [psql]
+    command: [-X, --no-password, --single-transaction, --set, ON_ERROR_STOP=1, --file, /sql/bootstrap.sql, --file, /sql/publication_guard.sql]
+  pipeline:
+    image: manufacturing-bi:local
+    build: .
+    env_file: .env.cloud.pipeline
+    environment:
+      GIT_SHA: ${GIT_SHA:-unknown}
+    volumes:
+      - ./data:/app/data
+      - ./evidence:/app/evidence
+    command: [python, -m, src.pipeline, --dataset, data/clean]

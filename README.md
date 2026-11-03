@@ -112,3 +112,7 @@ The MVP accepts at most a 366-day declared period, ISO dates and timezone-free e
 Stop services safely with `docker compose --profile test down` (no `-v`); the demo volume remains. Restart with the startup command. Regenerate and rerun clean inputs to recover a failed demo. Bootstrap SQL runs only on an empty database volume. Existing schema changes require an intentional migration, not deleting volumes. To make a completely separate new demo, first stop the current dashboard, then use a different Compose project name (`docker compose -p manufacturing-bi-fresh ...`) for every command; it creates another volume while preserving the old one. Never delete the database volume as routine troubleshooting.
 
 Setup follows the official [Streamlit Docker guide](https://docs.streamlit.io/deploy/tutorials/docker), [Compose startup ordering](https://docs.docker.com/compose/how-tos/startup-order/), and [PostgreSQL 16 privilege model](https://www.postgresql.org/docs/16/ddl-priv.html).
+
+## Public portfolio deployment
+
+The owner has authorized a public GitHub repository and free hosting. See [deployment instructions and status](docs/DEPLOYMENT.md) for the cloud entry point, managed database setup, TLS and reporter-only secret settings. Local Docker startup remains unchanged. Hosting preparation is covered by 50 local tests; remote deployment and hosted CI results are tracked separately from the original local verification record.
