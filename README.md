@@ -1,6 +1,10 @@
 # Manufacturing Data Pipeline & Inventory Reconciliation Dashboard
 
-A working local portfolio project for Rahul Gehlot: receive manufacturing extracts, check their quality, reconcile component inventory to an independently delivered finance extract, and publish only validated results. Failed attempts leave the last approved dashboard intact and retain evidence for diagnosis.
+A live portfolio project for Rahul Gehlot: receive manufacturing extracts, check their quality, reconcile component inventory to an independently delivered finance extract, and publish only validated results. Failed attempts leave the last approved dashboard intact and retain evidence for diagnosis.
+
+**[Open the live dashboard](https://rahul-manufacturing-bi.streamlit.app/)** · [Source on GitHub](https://github.com/Rahul03082001/manufacturing-bi)
+
+Hosted on free Streamlit Community Cloud and Neon PostgreSQL. The synthetic demo closes January 30, 2026 with **$1,168,661.00** in inventory and finance, a **$0.00** difference, and **20** components with positive stock. Free services may sleep when idle; allow time for the app to wake up.
 
 ## Start locally
 
@@ -105,7 +109,7 @@ The pipeline identity is trusted to evaluate checks honestly; it is not an indep
 
 ## Limits and safe operations
 
-This is a synthetic portfolio MVP, not a complete accounting system or production/SOX-compliant service. No counterpart accounts, BOM/MES, WIP, actual costing, COGS, taxes or revenue recognition. No ERP/SAP integration, dbt, Airflow, Spark, Kafka, cloud, Power BI/Tableau, LLM runtime, custom frontend, or automatic column-lineage parser. Finance and inventory share the generator's initial history, so delivery manifests are not independent external assurance; hand calculations provide an additional test oracle. Daily balance reconciliation can miss offsetting posting errors. Data is retained indefinitely; growth, retention and schema migrations need a later design.
+This is a synthetic portfolio MVP, not a complete accounting system or production/SOX-compliant service. No counterpart accounts, BOM/MES, WIP, actual costing, COGS, taxes or revenue recognition. No ERP/SAP integration, dbt, Airflow, Spark, Kafka, Power BI/Tableau, LLM runtime, custom frontend, or automatic column-lineage parser. Finance and inventory share the generator's initial history, so delivery manifests are not independent external assurance; hand calculations provide an additional test oracle. Daily balance reconciliation can miss offsetting posting errors. Data is retained indefinitely; growth, retention and schema migrations need a later design.
 
 The MVP accepts at most a 366-day declared period, ISO dates and timezone-free event timestamps, and absolute integer field values up to 1,000,000,000. Aggregates use PostgreSQL bigint and reject processing errors on overflow; this is not a large-scale loader. Base image tags can change; direct and transitive Python packages are pinned to the tested environment. An upstream Altair deprecation warning occurs in Streamlit tests without affecting their result.
 
@@ -115,4 +119,4 @@ Setup follows the official [Streamlit Docker guide](https://docs.streamlit.io/de
 
 ## Public portfolio deployment
 
-The owner has authorized a public GitHub repository and free hosting. See [deployment instructions and status](docs/DEPLOYMENT.md) for the cloud entry point, managed database setup, TLS and reporter-only secret settings. Local Docker startup remains unchanged. Hosting preparation is covered by 50 local tests; remote deployment and hosted CI results are tracked separately from the original local verification record.
+The public dashboard was verified on November 3, 2026: Inventory, Reconciliation and Run status display the approved hosted snapshot. The app uses only the restricted reporter credential over verified TLS. Owner and pipeline credentials stay with the local operator. The full suite passes **51 tests**, and GitHub Actions passes. See [deployment instructions and evidence](docs/DEPLOYMENT.md) for setup, actual run links and hosted checks. Local Docker startup remains available.

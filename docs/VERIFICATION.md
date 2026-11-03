@@ -39,14 +39,20 @@ These run IDs are real local attempts. Each has a sanitized JSON file under `evi
 
 Implementation commit: `d4ad0c1ccea81d0ea56a31c3e0227aaf03f4e18c` — pipeline, SQL, dashboard, Docker setup, 48 tests and CI workflow. It is the Git SHA carried by the recorded CLI demo attempts. Later documentation and dashboard filesystem isolation changes appear in local Git history; no commit IDs are invented. Git used the machine's existing automatic author/committer identity; no global Git configuration was changed.
 
-CI workflow was added only after real local checks passed. Hosted GitHub Actions and x86 execution have not been verified. No remote, push, Jira issue, cloud deployment, external review, SOX certification or production readiness is claimed. Administrator override, synthetic common-source limitations and deferred work are documented in README and BACKLOG.
+CI workflow was added only after real local checks passed. Hosted GitHub Actions and deployment were verified in the later follow-ups below. No Jira issue, external review, SOX certification or production readiness is claimed. Administrator override, synthetic common-source limitations and deferred work are documented in README and BACKLOG.
 
 Final deployment check: `docker compose up -d --wait dashboard` passed after limiting dashboard mounts. A container-side AppTest asserted reporter identity, no pipeline/owner password environment variables, no `/app/data` or `/app/evidence` directories, no rendering errors and the $1,168,661.00 published card. The disposable test service was stopped after verification; the demo database and dashboard remain running.
 
 ## Hosting preparation follow-up
 
-At the owner's request, added a root cloud entry point, configurable PostgreSQL port/TLS/timeouts, secret exclusions and separate cloud operator Compose commands. Executed `docker compose build pipeline && docker compose --profile test run --rm tests`: **50 passed, 1 upstream deprecation warning**, exit 0. The hosted database and public URL still require separate verification; these local checks do not prove remote deployment.
+At the owner's request, added a root cloud entry point, configurable PostgreSQL port/TLS/timeouts, secret exclusions and separate cloud operator Compose commands. Executed `docker compose build pipeline && docker compose --profile test run --rm tests`: **50 passed, 1 upstream deprecation warning**, exit 0. Hosted database and public URL checks were then performed separately, as recorded below.
 
 Hosted follow-up: GitHub Actions run 41556442227 completed successfully. A dedicated free Neon PostgreSQL 16 database was initialized using verified TLS; the clean run ff2cf6a5-3db6-4c07-8207-7d55f8415ce8 published 116866100-cent closing inventory and finance balances with zero differences. `docker compose -f compose.cloud.yaml run --rm verify` confirmed actual approved-view reads and denied raw/candidate reads and pointer writes. Streamlit public-page verification is tracked in DEPLOYMENT.md.
 
 Cloud startup handling follow-up: observed missing DB_USER during initial Streamlit startup. Moved connection construction inside error handling and added a test for the readable setup state. Matched the hosted platform's pyarrow 24.0.0 selection in both dependency files. Rebuilt image and ran the full suite: **51 passed, 1 upstream Altair deprecation warning**, exit 0.
+
+## Public app verification — November 3, 2026
+
+After the owner saved reporter secrets, opened [the actual hosted app](https://rahul-manufacturing-bi.streamlit.app/) in the browser. Inventory showed **$1,168,661.00** and **20** components with positive stock. Reconciliation showed inventory and finance each **$1,168,661.00**, difference **$0.00**. Run status showed approved snapshot `ff2cf6a5-3db6-4c07-8207-7d55f8415ce8`, latest attempt **SUCCESS**, and no recorded failures in the dedicated hosted database. Streamlit sharing confirmed the app is public.
+
+GitHub Actions [run 41580632413](https://github.com/Rahul03082001/manufacturing-bi/actions/runs/41580632413) passed for application commit `fe0cda86fd47f2679ffaddd547e4e0132ab0f4eb`; [run 41581264347](https://github.com/Rahul03082001/manufacturing-bi/actions/runs/41581264347) passed after the dev-container addition. The original local verification record above is retained as evidence of earlier milestones.

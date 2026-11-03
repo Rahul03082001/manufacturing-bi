@@ -198,12 +198,12 @@ The dashboard service also overrides the shared development mounts: only its app
 ## ADR-013: Public portfolio repository and free hosted deployment
 
 - Date: 2026-11-02
-- Status: Accepted; implementation: Implemented, not verified (remote deployment)
+- Status: Accepted; implementation: Verified
 - Context: The owner explicitly requested GitHub publication and a live project, then selected a public repository and free hosting only. This supersedes the earlier local-only scope boundary for this requested deployment.
 - Options: Keep local-only; paid hosting; free Streamlit UI plus managed PostgreSQL.
-- Decision: Publish under Rahul03082001/manufacturing-bi and prepare Streamlit Community Cloud + Neon free hosting. Preserve PostgreSQL calculations, restricted reporter identity, and separate owner/pipeline operations. No paid plans.
+- Decision: Publish under Rahul03082001/manufacturing-bi using Streamlit Community Cloud + Neon free hosting. Preserve PostgreSQL calculations, restricted reporter identity, and separate owner/pipeline operations. No paid plans.
 - Trade-off: Account sign-in and provider consent may require the owner; free services may sleep and impose resource limits. This is a live portfolio demo, not production availability.
-- Verification: 50 local tests passed after adding cloud entry-point rerender and explicit remote TLS configuration checks. Secret files are excluded from Git and Docker. Actual remote outcomes are recorded separately in DEPLOYMENT.md.
-- Commit / actual Jira key: Pending / None.
+- Verification: 51 local tests and hosted CI passed. Secret files are excluded from Git and Docker. Live Inventory, Reconciliation and Run status verified November 3, 2026. Actual remote outcomes are recorded separately in DEPLOYMENT.md.
+- Commit / actual Jira key: fe0cda86fd47f2679ffaddd547e4e0132ab0f4eb (latest application change) / None.
 
-ADR-013 implementation update: public GitHub push completed; GitHub Actions run 41556442227 passed. Free Neon PostgreSQL 16 bootstrap, clean publication and reporter restrictions verified remotely. Added Dockerfile.setup because the upstream PostgreSQL client image lacked the CA certificate bundle; certificate verification remained enabled. Streamlit page verification is pending in DEPLOYMENT.md.
+ADR-013 implementation update: public GitHub push and free deployment completed. Neon PostgreSQL 16 bootstrap, clean publication and reporter restrictions verified remotely. Added Dockerfile.setup because the upstream PostgreSQL client image lacked the CA certificate bundle; certificate verification remained enabled. The public Streamlit page displays $1,168,661.00 in inventory and finance with a zero difference. See DEPLOYMENT.md for links and evidence.

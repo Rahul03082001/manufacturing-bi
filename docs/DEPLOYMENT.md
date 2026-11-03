@@ -1,10 +1,12 @@
 # Hosted deployment
 
-The local Compose application and tests remain the reference implementation. Cloud preparation adds a root `streamlit_app.py` entry point, configurable port/TLS settings, ignored secret paths, and operator commands for a managed PostgreSQL database. These changes do not make a local URL publicly reachable. A verified hosted URL is recorded here only after deployment succeeds.
+**[Live public dashboard](https://rahul-manufacturing-bi.streamlit.app/)** · **[GitHub repository](https://github.com/Rahul03082001/manufacturing-bi)**
 
-## Proposed free portfolio hosting
+Verified November 3, 2026: the hosted dashboard reads the approved Neon snapshot and displays matching inventory and finance balances. The local Compose application and tests remain the reference implementation. Cloud deployment uses the root `streamlit_app.py` entry point, configurable port/TLS settings, ignored secret paths, and local operator commands for managed PostgreSQL.
 
-Use Streamlit Community Cloud for the UI and Neon PostgreSQL 16 for the database. Both offer free plans; idle services may sleep and usage limits apply. Free hosting has no uptime guarantee. These are proposed providers until the owner selects them and signs in. No paid plan is authorized by this document.
+## Free portfolio hosting
+
+The deployed UI uses Streamlit Community Cloud and the database uses Neon PostgreSQL 16. The owner selected free hosting and completed account consent. Both services use free plans; idle services may sleep and usage limits apply. Free hosting has no uptime guarantee. No paid plan is authorized.
 
 - [Streamlit deployment](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/deploy)
 - [Streamlit secret settings](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/secrets-management)
@@ -57,7 +59,7 @@ export GIT_SHA="$(git rev-parse HEAD)"
 docker compose -f compose.cloud.yaml run --rm pipeline python -m src.pipeline --dataset data/clean
 ```
 
-These are deployment instructions, not a claim that a remote database has already been initialized. Normal reruns use only the final pipeline command. The separate cloud operator Compose file starts no local database. Evidence and retained sources stay on the operator machine; database audit remains in the managed database. Hosted disaster recovery and external evidence storage remain deferred.
+The current hosted database has already been initialized; do not repeat setup against it. Normal reruns use only the final pipeline command. The separate cloud operator Compose file starts no local database. Evidence and retained sources stay on the operator machine; database audit remains in the managed database. Hosted disaster recovery and external evidence storage remain deferred.
 
 ## Dashboard deployment
 
@@ -67,19 +69,19 @@ Only the already-approved synthetic inventory and narrow status views are visibl
 
 After deploy, verify the real URL opens, the closing value agrees with the hosted database, differences are zero, and the reporter is denied raw reads/writes. Then set the repository homepage to the verified URL. GitHub Pages alone cannot run this Streamlit + PostgreSQL application.
 
-## Verified deployment progress (2026-11-02, America/New_York)
+## Verified deployment (completed 2026-11-03, America/New_York)
 
-- Public source: https://github.com/Rahul03082001/manufacturing-bi (`main`).
-- GitHub Actions succeeded for commit `193ae3b52fff85c9f808fbe489051aca15bc10c9`: https://github.com/Rahul03082001/manufacturing-bi/actions/runs/41556442227 . This also verifies the container test workflow on GitHub's Linux runner.
+- [Public source](https://github.com/Rahul03082001/manufacturing-bi) (`main`).
+- GitHub Actions succeeded for application commit `fe0cda86fd47f2679ffaddd547e4e0132ab0f4eb`: [run 41580632413](https://github.com/Rahul03082001/manufacturing-bi/actions/runs/41580632413). The subsequent dev-container commit `d13e1d4f479875569c4b301592cd7fa4bea8eb51` also passed [run 41581264347](https://github.com/Rahul03082001/manufacturing-bi/actions/runs/41581264347). These verify the container test workflow on GitHub's Linux runner.
 - Created a dedicated **free** Neon project `manufacturing-bi` in AWS US East 2 with PostgreSQL **16**, database `manufacturing`. No paid upgrade or extra optional Neon services were enabled.
 - Owner bootstrap executed transactionally. The first connection attempt identified a missing CA bundle in the standard PostgreSQL client image; `Dockerfile.setup` adds public CA certificates. The successful retry kept `verify-full` enabled.
 - `docker compose -f compose.cloud.yaml run --build --rm setup`: success.
 - Hosted clean pipeline run `ff2cf6a5-3db6-4c07-8207-7d55f8415ce8`: SUCCESS, all eight controls passed. January 30 inventory and finance each equal **116866100 cents**, difference **0**.
 - `docker compose -f compose.cloud.yaml run --rm verify`: passed actual reporter queries and denied raw/candidate reads and publication writes.
-- Streamlit deployment configured for `streamlit_app.py`, branch `main`, Python **3.12**; app publication awaits secret setup and final live verification.
+- Streamlit deployment uses `streamlit_app.py`, branch `main`, Python **3.12**, with only reporter database settings in app secrets.
+- Live browser verification: Inventory displays **$1,168,661.00** and **20** positive-stock components; Reconciliation displays matching inventory/finance balances and a **$0.00** difference; Run status shows the hosted run above with latest attempt **SUCCESS**.
+- Streamlit's sharing dialog confirms **Make this app public** is enabled.
 
 For future database smoke checks, keep `.env.cloud.reporter` locally with the same root settings as the TOML example, in dotenv `KEY=value` format, and run `docker compose -f compose.cloud.yaml run --rm verify`. This service receives only the reporter credential. The cloud operator env files use Compose parsing; do not pass quoted dotenv values directly to `docker run --env-file`, whose parsing differs.
 
-The Streamlit service was created at https://rahul-manufacturing-bi.streamlit.app/ using Python 3.12. Its first startup confirmed the reporter secret settings had not yet been entered (`DB_USER` missing), so the URL is not yet a verified working dashboard. The owner was directed to App settings → Secrets and the ignored local `.streamlit/secrets.toml` file. No credentials are published in the repository.
-
-The startup now handles missing database settings with a readable setup message. Streamlit's hosting log replaced pyarrow 26 with 24; the repository now pins **pyarrow 24.0.0** explicitly to match that hosted selection. A rebuilt local image passed **51 tests** after these changes. Final dashboard verification remains pending until its reporter secrets are saved.
+Initial startup lacked reporter secrets (`DB_USER` missing). The owner saved the ignored local `.streamlit/secrets.toml` contents in App settings → Secrets, resolving the setup state. No credentials are published in the repository. Missing settings now produce a readable setup message. The repository pins **pyarrow 24.0.0** to match the hosted platform's selection; the rebuilt local image passed **51 tests** after these changes.
