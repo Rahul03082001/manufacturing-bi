@@ -1,0 +1,16 @@
+name: PostgreSQL integration
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Local demo environment
+        run: cp .env.example .env
+      - name: Build shared image
+        run: docker compose build pipeline
+      - name: Isolated PostgreSQL and Streamlit tests
+        run: docker compose --profile test run --rm tests
+      - name: Stop disposable test services
+        if: always()
+        run: docker compose --profile test down

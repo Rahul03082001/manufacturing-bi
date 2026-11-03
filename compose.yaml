@@ -1,0 +1,96 @@
+name: manufacturing-bi
+x-python: &python
+  image: manufacturing-bi:local
+  build: .
+  working_dir: /app
+  volumes:
+    - ./src:/app/src:ro
+    - ./sql:/app/sql:ro
+    - ./dashboard:/app/dashboard:ro
+    - ./tests:/app/tests:ro
+    - ./data:/app/data
+    - ./evidence:/app/evidence
+services:
+  db:
+    image: postgres:16-bookworm
+    environment:
+      POSTGRES_DB: manufacturing
+      POSTGRES_USER: bootstrap_owner
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Create .env first}
+      PIPELINE_PASSWORD: ${PIPELINE_PASSWORD:?Create .env first}
+      REPORTER_PASSWORD: ${REPORTER_PASSWORD:?Create .env first}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./sql/bootstrap.sql:/docker-entrypoint-initdb.d/001-bootstrap.sql:ro
+      - ./sql/publication_guard.sql:/docker-entrypoint-initdb.d/002-publication_guard.sql:ro
+
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U bootstrap_owner -d manufacturing']
+      interval: 3s
+      timeout: 3s
+      retries: 30
+  pipeline:
+    <<: *python
+    environment:
+      DB_HOST: db
+      DB_NAME: manufacturing
+      DB_USER: pipeline
+      DB_PASSWORD: ${PIPELINE_PASSWORD:?Create .env first}
+      GIT_SHA: ${GIT_SHA:-unknown}
+    depends_on:
+      db:
+        condition: service_healthy
+    command: [python, -m, src.pipeline, --dataset, data/clean]
+  dashboard:
+    <<: *python
+    environment:
+      DB_HOST: db
+      DB_NAME: manufacturing
+      DB_USER: reporter
+      DB_PASSWORD: ${REPORTER_PASSWORD:?Create .env first}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports: ['127.0.0.1:8501:8501']
+    command: [streamlit, run, dashboard/app.py, --server.address=0.0.0.0, --server.headless=true, --browser.gatherUsageStats=false]
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:8501/_stcore/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  db-test:
+    image: postgres:16-bookworm
+    profiles: [test]
+    environment:
+      POSTGRES_DB: manufacturing_test
+      POSTGRES_USER: bootstrap_owner
+      POSTGRES_PASSWORD: disposable_test_owner
+      PIPELINE_PASSWORD: disposable_test_pipeline
+      REPORTER_PASSWORD: disposable_test_reporter
+    tmpfs: [/var/lib/postgresql/data]
+    volumes:
+      - ./sql/bootstrap.sql:/docker-entrypoint-initdb.d/001-bootstrap.sql:ro
+      - ./sql/publication_guard.sql:/docker-entrypoint-initdb.d/002-publication_guard.sql:ro
+
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U bootstrap_owner -d manufacturing_test']
+      interval: 2s
+      timeout: 3s
+      retries: 30
+  tests:
+    <<: *python
+    profiles: [test]
+    environment:
+      DB_HOST: db-test
+      DB_NAME: manufacturing_test
+      DB_USER: pipeline
+      DB_PASSWORD: disposable_test_pipeline
+      REPORTER_PASSWORD: disposable_test_reporter
+      EVIDENCE_DIR: /tmp/evidence
+      RECEIVED_DIR: /tmp/received
+    depends_on:
+      db-test:
+        condition: service_healthy
+    command: [pytest, -q, -p, no:cacheprovider]
+volumes:
+  postgres-data:
