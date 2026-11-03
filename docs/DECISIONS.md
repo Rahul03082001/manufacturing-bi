@@ -205,3 +205,5 @@ The dashboard service also overrides the shared development mounts: only its app
 - Trade-off: Account sign-in and provider consent may require the owner; free services may sleep and impose resource limits. This is a live portfolio demo, not production availability.
 - Verification: 50 local tests passed after adding cloud entry-point rerender and explicit remote TLS configuration checks. Secret files are excluded from Git and Docker. Actual remote outcomes are recorded separately in DEPLOYMENT.md.
 - Commit / actual Jira key: Pending / None.
+
+ADR-013 implementation update: public GitHub push completed; GitHub Actions run 41556442227 passed. Free Neon PostgreSQL 16 bootstrap, clean publication and reporter restrictions verified remotely. Added Dockerfile.setup because the upstream PostgreSQL client image lacked the CA certificate bundle; certificate verification remained enabled. Streamlit page verification is pending in DEPLOYMENT.md.

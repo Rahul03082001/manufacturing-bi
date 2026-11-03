@@ -73,7 +73,7 @@ docker compose --profile test rm -f db-test
 docker compose --profile test run --rm tests
 ```
 
-Tests cover deterministic bytes; an independently hand-authored 10 × $25 receipt / 3 × $25 issue fixture ($175 closing); no-activity-day carry-forward; clean publish; identical rerun totals and uniqueness; all four faults; retained published data; recovery; transactional rollback and concurrent read consistency; database constraints; reporter restrictions and denied audit updates/deletes/truncation; parsing/delivery/business-rule edge cases; and actual Streamlit rendering/filter behavior against PostgreSQL. See [verification](docs/VERIFICATION.md) for measured results. A small GitHub Actions workflow reuses these commands; hosted CI has **not** run because this is a local repository with no remote.
+Tests cover deterministic bytes; an independently hand-authored 10 × $25 receipt / 3 × $25 issue fixture ($175 closing); no-activity-day carry-forward; clean publish; identical rerun totals and uniqueness; all four faults; retained published data; recovery; transactional rollback and concurrent read consistency; database constraints; reporter restrictions and denied audit updates/deletes/truncation; parsing/delivery/business-rule edge cases; and actual Streamlit rendering/filter behavior against PostgreSQL. See [verification](docs/VERIFICATION.md) for measured results. A small GitHub Actions workflow reuses these commands; the first hosted run passed. See docs/DEPLOYMENT.md for the source repository and run link.
 
 ## Model and controls
 

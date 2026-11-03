@@ -49,7 +49,7 @@ Run from the project root after configuring the files:
 
 ```bash
 # One-time setup, atomic; reruns against an initialized database fail safely.
-docker compose -f compose.cloud.yaml run --rm setup
+docker compose -f compose.cloud.yaml run --build --rm setup
 # Build current code and load a separately validated hosted snapshot.
 docker compose -f compose.cloud.yaml build pipeline
 docker compose -f compose.cloud.yaml run --rm pipeline python -m src.generate
@@ -66,3 +66,16 @@ Select the GitHub repository, `main` branch, **streamlit_app.py**, and **Python 
 Only the already-approved synthetic inventory and narrow status views are visible to visitors. There is no public upload, pipeline execution or database administration endpoint. Review repository visibility and app visibility separately; a private repository does not automatically make the hosted dashboard private.
 
 After deploy, verify the real URL opens, the closing value agrees with the hosted database, differences are zero, and the reporter is denied raw reads/writes. Then set the repository homepage to the verified URL. GitHub Pages alone cannot run this Streamlit + PostgreSQL application.
+
+## Verified deployment progress (2026-11-02, America/New_York)
+
+- Public source: https://github.com/Rahul03082001/manufacturing-bi (`main`).
+- GitHub Actions succeeded for commit `193ae3b52fff85c9f808fbe489051aca15bc10c9`: https://github.com/Rahul03082001/manufacturing-bi/actions/runs/41556442227 . This also verifies the container test workflow on GitHub's Linux runner.
+- Created a dedicated **free** Neon project `manufacturing-bi` in AWS US East 2 with PostgreSQL **16**, database `manufacturing`. No paid upgrade or extra optional Neon services were enabled.
+- Owner bootstrap executed transactionally. The first connection attempt identified a missing CA bundle in the standard PostgreSQL client image; `Dockerfile.setup` adds public CA certificates. The successful retry kept `verify-full` enabled.
+- `docker compose -f compose.cloud.yaml run --build --rm setup`: success.
+- Hosted clean pipeline run `ff2cf6a5-3db6-4c07-8207-7d55f8415ce8`: SUCCESS, all eight controls passed. January 30 inventory and finance each equal **116866100 cents**, difference **0**.
+- `docker compose -f compose.cloud.yaml run --rm verify`: passed actual reporter queries and denied raw/candidate reads and publication writes.
+- Streamlit deployment configured for `streamlit_app.py`, branch `main`, Python **3.12**; app publication awaits secret setup and final live verification.
+
+For future database smoke checks, keep `.env.cloud.reporter` locally with the same root settings as the TOML example, in dotenv `KEY=value` format, and run `docker compose -f compose.cloud.yaml run --rm verify`. This service receives only the reporter credential. The cloud operator env files use Compose parsing; do not pass quoted dotenv values directly to `docker run --env-file`, whose parsing differs.

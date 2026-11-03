@@ -46,3 +46,5 @@ Final deployment check: `docker compose up -d --wait dashboard` passed after lim
 ## Hosting preparation follow-up
 
 At the owner's request, added a root cloud entry point, configurable PostgreSQL port/TLS/timeouts, secret exclusions and separate cloud operator Compose commands. Executed `docker compose build pipeline && docker compose --profile test run --rm tests`: **50 passed, 1 upstream deprecation warning**, exit 0. The hosted database and public URL still require separate verification; these local checks do not prove remote deployment.
+
+Hosted follow-up: GitHub Actions run 41556442227 completed successfully. A dedicated free Neon PostgreSQL 16 database was initialized using verified TLS; the clean run ff2cf6a5-3db6-4c07-8207-7d55f8415ce8 published 116866100-cent closing inventory and finance balances with zero differences. `docker compose -f compose.cloud.yaml run --rm verify` confirmed actual approved-view reads and denied raw/candidate reads and pointer writes. Streamlit public-page verification is tracked in DEPLOYMENT.md.

@@ -3,7 +3,10 @@
 name: manufacturing-bi-cloud-operator
 services:
   setup:
-    image: postgres:16-bookworm
+    image: manufacturing-bi-setup:local
+    build:
+      context: .
+      dockerfile: Dockerfile.setup
     env_file: .env.cloud.owner
     volumes:
       - ./sql:/sql:ro
@@ -19,3 +22,9 @@ services:
       - ./data:/app/data
       - ./evidence:/app/evidence
     command: [python, -m, src.pipeline, --dataset, data/clean]
+  verify:
+    image: manufacturing-bi:local
+    env_file: .env.cloud.reporter
+    volumes:
+      - ./src:/app/src:ro
+    command: [python, -m, src.verify_hosted]
