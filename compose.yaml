@@ -43,6 +43,9 @@ services:
     command: [python, -m, src.pipeline, --dataset, data/clean]
   dashboard:
     <<: *python
+    volumes:
+      - ./src:/app/src:ro
+      - ./dashboard:/app/dashboard:ro
     environment:
       DB_HOST: db
       DB_NAME: manufacturing
